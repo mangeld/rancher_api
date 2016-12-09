@@ -1,4 +1,4 @@
-from rancher.api import Model, Field
+from rancher.engine import Model, Field
 import pytest
 
 

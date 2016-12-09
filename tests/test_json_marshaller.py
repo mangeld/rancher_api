@@ -1,4 +1,4 @@
-from rancher.api import JsonMarshable, Model
+from rancher.engine import JsonMarshable, Model
 
 
 class MyModel(Model, JsonMarshable):

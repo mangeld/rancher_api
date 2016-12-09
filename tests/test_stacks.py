@@ -1,4 +1,5 @@
-from rancher.api import RancherApi, ApiSettings, RequestAdapter
+from rancher.api import RancherApi, ApiSettings
+from rancher.engine import RequestAdapter
 
 from mock import MagicMock
 
