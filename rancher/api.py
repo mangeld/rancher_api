@@ -1,3 +1,6 @@
+from rancher.models import RancherEnvironment
+
+
 class ApiSettings:
     url = None
     access_key = None
@@ -16,7 +19,7 @@ class RancherApi:
 
     def list_envs(self):
         envs = self.http.get(self.settings.url + '/environments')['data']
-        return [i['name'] for i in envs]
+        return [RancherEnvironment.from_dict(i) for i in envs]
 
     def remove_env(self, name, force=False):
         pass

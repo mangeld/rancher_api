@@ -1,7 +1,7 @@
-from rancher.engine import Model
+from rancher.engine import Model, JsonMarshable
 
 
-class RancherEnvironment(Model):
+class RancherEnvironment(Model, JsonMarshable):
     id = None
     environment = None
     name = ""
