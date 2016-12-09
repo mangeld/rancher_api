@@ -22,6 +22,8 @@ class Field:
 
 class JsonMarshable:
 
+    uncamelize = True
+
     @classmethod
     def get_members(cls):
         members = inspect.getmembers(cls)
@@ -33,10 +35,15 @@ class JsonMarshable:
     def from_dict(cls, dict_repr):
         members = cls.get_members()
         instance = cls()
-        for key, value in dict_repr.items():
+        for key, value in instance.repr_items(dict_repr):
             if key in members.keys():
                 setattr(instance, key, value)
         return instance
+
+    def repr_items(self, representation):
+        if self.uncamelize:
+            representation
+
 
     def to_dict(self):
         return {
