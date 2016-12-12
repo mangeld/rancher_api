@@ -7,6 +7,6 @@ python:
   - "3.5-dev" # 3.5 development branch
   - "3.6-dev" # 3.6 development branch
 # command to install dependencies
-install: "pip install -r requirements.txt"
+install: "pip install -r requirements.txt && requirements-dev.txt"
 # command to run tests
-script: pytest
+script: make test
