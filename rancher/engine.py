@@ -1,5 +1,7 @@
 import inspect
 
+from rancher.utils import uncamelize
+
 import requests
 
 
@@ -42,8 +44,12 @@ class JsonMarshable:
 
     def repr_items(self, representation):
         if self.uncamelize:
-            representation
-
+            for key, value in representation.items():
+                if isinstance(value, dict):
+                    value = self.repr_items(value)
+                yield uncamelize(key), value
+        else:
+            yield from representation.items()
 
     def to_dict(self):
         return {
