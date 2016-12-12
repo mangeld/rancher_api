@@ -78,10 +78,22 @@ class JsonMarshable:
 class Model:
 
     def __init__(self, **kwargs):
+        class_members = inspect.getmembers(self.__class__)
+        class_members = dict(filter(lambda e: not e[0].startswith("__"), class_members))
+        is_model_class = lambda e: inspect.isclass(e) and issubclass(e, Model)
         for name, value in kwargs.items():
+            if is_model_class(class_members[name]) and not isinstance(value, Model):
+                raise ValueError(
+                    "Attribute '{}' is defined as {} type in {}. '{}' instance was given instead."
+                    .format(
+                        name,
+                        class_members[name].__name__,
+                        self.__class__.__name__,
+                        value.__class__.__name__)
+                )
             setattr(self, name, value)
         for name, member in inspect.getmembers(self):
-            if inspect.isclass(member) and issubclass(member, Model) and not name.startswith("__"):
+            if is_model_class(member) and not name.startswith("__"):
                 setattr(self, name, None)
 
 
