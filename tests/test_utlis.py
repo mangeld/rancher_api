@@ -12,3 +12,8 @@ class TestUncamelize:
         camelized = "myID"
 
         assert uncamelize(camelized) == "my_id"
+
+    def test_first_word_is_not_uncamelized(self):
+        camelized = "Myid"
+
+        assert uncamelize(camelized) == "myid"
