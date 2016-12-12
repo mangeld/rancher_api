@@ -1,4 +1,5 @@
 import inspect
+import types
 
 from rancher.utils import uncamelize
 
@@ -30,7 +31,7 @@ class JsonMarshable:
     def get_members(cls):
         members = inspect.getmembers(cls)
         members = filter(lambda e: not e[0].startswith("__"), members)
-        members = filter(lambda e: not callable(e[1]), members)
+        members = filter(lambda e: not (callable(e[1]) and isinstance(e[1], Model)), members)
         return {name: value for name, value in members}
 
     @classmethod
@@ -39,17 +40,24 @@ class JsonMarshable:
         instance = cls()
         for key, value in instance.repr_items(dict_repr):
             if key in members.keys():
+                if members[key] and issubclass(members[key], Model):
+                    setattr(instance, key, getattr(cls, key).from_dict(value))
+                    continue
                 setattr(instance, key, value)
         return instance
 
     def repr_items(self, representation):
+        if isinstance(representation, types.GeneratorType):
+            items = representation
+        else:
+            items = representation.items()
         if self.uncamelize:
-            for key, value in representation.items():
+            for key, value in items:
                 if isinstance(value, dict):
                     value = self.repr_items(value)
                 yield uncamelize(key), value
         else:
-            yield from representation.items()
+            yield from items
 
     def to_dict(self):
         return {
