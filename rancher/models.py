@@ -1,4 +1,4 @@
-from rancher.engine import Model, JsonMarshable, HttpInterface
+from rancher.engine import Model, JsonMarshable
 
 
 class RancherEnvironmentActions(Model, JsonMarshable):
