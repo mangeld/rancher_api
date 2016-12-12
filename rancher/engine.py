@@ -82,6 +82,8 @@ class Model:
         class_members = dict(filter(lambda e: not e[0].startswith("__"), class_members))
         is_model_class = lambda e: inspect.isclass(e) and issubclass(e, Model)
         for name, value in kwargs.items():
+            # If the atribute is defined in the model as a nested model then check
+            # if the object given is an instance of that class.
             if is_model_class(class_members[name]) and not isinstance(value, Model):
                 raise ValueError(
                     "Attribute '{}' is defined as {} type in {}. '{}' instance was given instead."
@@ -92,6 +94,7 @@ class Model:
                         value.__class__.__name__)
                 )
             setattr(self, name, value)
+        # Search for nested uninitialized models and set them to None.
         for name, member in inspect.getmembers(self):
             if is_model_class(member) and not name.startswith("__"):
                 setattr(self, name, None)
