@@ -1,4 +1,14 @@
-from rancher.engine import Model, JsonMarshable
+from rancher.engine import Model, JsonMarshable, HttpInterface
+
+
+class RancherEnvironmentActions(Model, JsonMarshable):
+    upgrade = ""
+    update = ""
+    remove = ""
+    addouputs = ""
+    activateservices = ""
+    deactivateservices = ""
+    exportconfig = ""
 
 
 class RancherEnvironment(Model, JsonMarshable):
@@ -8,7 +18,10 @@ class RancherEnvironment(Model, JsonMarshable):
     description = ""
     docker_compose = ""
     rancher_compose = ""
+    created_ts = ""
     start_services = True
+    uuid = ""
+    actions = RancherEnvironmentActions
 
 
 class RancherService:

@@ -109,7 +109,7 @@ class RequestAdapter:
         return requests.get(url).json()
 
     def post(self, url):
-        pass
+        return requests.post(url).json()
 
     def delete(self, url):
         pass

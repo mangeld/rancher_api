@@ -21,5 +21,5 @@ class RancherApi:
         envs = self.http.get(self.settings.url + '/environments')['data']
         return [RancherEnvironment.from_dict(i) for i in envs]
 
-    def remove_env(self, name, force=False):
-        pass
+    def remove_env(self, environment):
+        self.http.post(environment.actions.remove)
