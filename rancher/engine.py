@@ -31,7 +31,8 @@ class JsonMarshable:
     def get_members(cls):
         members = inspect.getmembers(cls)
         members = filter(lambda e: not e[0].startswith("__"), members)
-        members = filter(lambda e: not (callable(e[1]) and isinstance(e[1], Model)), members)
+        members = filter(lambda e: not isinstance(e[1], types.MethodType), members)
+        members = filter(lambda e: not (callable(e[1]) and not inspect.isclass(e[1])), members)
         return {name: value for name, value in members}
 
     @classmethod
@@ -60,10 +61,18 @@ class JsonMarshable:
             yield from items
 
     def to_dict(self):
-        return {
-            field: getattr(self, field)
-            for field in self.get_members().keys()
-        }
+        obj = dict()
+        for field, value in self.get_members().items():
+            if field in JsonMarshable.get_members():
+                continue
+            value_instance = getattr(self, field)
+
+            if value_instance and inspect.isclass(value) and issubclass(value, Model):
+                obj[field] = value_instance.to_dict()
+            else:
+                obj[field] = value_instance
+
+        return obj
 
 
 class Model:
@@ -71,6 +80,9 @@ class Model:
     def __init__(self, **kwargs):
         for name, value in kwargs.items():
             setattr(self, name, value)
+        for name, member in inspect.getmembers(self):
+            if inspect.isclass(member) and issubclass(member, Model) and not name.startswith("__"):
+                setattr(self, name, None)
 
 
 class RequestAdapter:

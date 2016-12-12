@@ -21,6 +21,19 @@ class TestJsonIsMarshalledTest:
         assert marshalled['name'] == "Test model"
 
 
+    def test_nested_fields_are_marshalled_to_dict(self):
+        model = Artist(
+            id="123",
+            name="Test model",
+            drawing=Drawing(
+                drawing_name="cool drawing"
+            )
+        )
+
+        marshalled = model.to_dict()
+
+        assert marshalled['drawing']['drawing_name'] == "cool drawing"
+
 class TestJsonIsUnMarshalled:
 
     def test_from_dict(self):
