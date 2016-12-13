@@ -49,8 +49,7 @@ def commit(version):
     version_str = ".".join(str(i) for i in version)
     import ipdb; ipdb.set_trace()
     repo.index.add(['setup.py', '__init__.py'])
-    repo.index.commit()
-
+    repo.index.commit("Bump version to: {}".format(version_str))
 
 def create_release(increase_type):
     last = last_version()
