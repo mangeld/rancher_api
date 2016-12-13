@@ -1,5 +1,6 @@
 import inspect
 import types
+from abc import ABCMeta, abstractmethod
 
 from rancher.utils import uncamelize
 
@@ -100,7 +101,26 @@ class Model:
                 setattr(self, name, None)
 
 
-class RequestAdapter:
+class HttpInterface(metaclass=ABCMeta):
+
+    @abstractmethod
+    def get(self, url):
+        pass
+
+    @abstractmethod
+    def post(self, url):
+        pass
+
+    @abstractmethod
+    def delete(self, url):
+        pass
+
+    @abstractmethod
+    def put(self, url):
+        pass
+
+
+class RequestAdapter(HttpInterface):
 
     def __init__(self):
         self.session = requests.Session()
