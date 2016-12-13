@@ -23,6 +23,8 @@ class RancherEnvironment(Model, JsonMarshable):
     uuid = ""
     actions = RancherEnvironmentActions
 
+    def remove(self):
+        self._http.post(self.actions.remove)
 
 class RancherService:
     pass

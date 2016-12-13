@@ -99,6 +99,8 @@ class Model:
         for name, member in inspect.getmembers(self):
             if is_model_class(member) and not name.startswith("__"):
                 setattr(self, name, None)
+        #TODO: USE DEPENDENCY INJECTION FOR THE MOTHER OF GOD
+        setattr(self, '_http', RequestAdapter())
 
 
 class HttpInterface(metaclass=ABCMeta):

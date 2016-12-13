@@ -22,4 +22,4 @@ class RancherApi:
         return [RancherEnvironment.from_dict(i) for i in envs]
 
     def remove_env(self, environment):
-        self.http.post(environment.actions.remove)
+        environment.remove()
