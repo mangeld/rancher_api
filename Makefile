@@ -10,3 +10,5 @@ release_major:
 	python make_release.py --major
 publish:
 	python setup.py register && python setup.py sdist upload
+clean:
+	rm -rf rancher.egg-info dist
