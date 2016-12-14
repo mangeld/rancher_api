@@ -14,10 +14,13 @@ def last_version():
 
 def increse_major(last_tag):
     last_tag[0] += 1
+    last_tag[1] = 0
+    last_tag[2] = 0
     return last_tag
 
 def increase_minor(last_tag):
     last_tag[1] += 1
+    last_tag[2] = 0
     return last_tag
 
 def increase_patch(last_tag):
