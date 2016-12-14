@@ -27,4 +27,5 @@ class TestEnvironmentIsListed:
 
         account = client.get_account("Default")
         environment = client.create_env('created-from-python', account)
+        environment.remove()
 
