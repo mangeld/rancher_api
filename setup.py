@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name="rancher",
-    version="0.1.3",
+    version="0.2.0",
     author="Miguel Ángel Durán González",
     author_email="hi@mangel.me",
     url="https://github.com/mangeld/rancher_api",
