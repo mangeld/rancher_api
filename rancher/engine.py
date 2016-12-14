@@ -46,6 +46,7 @@ class JsonMarshable:
                     setattr(instance, key, getattr(cls, key).from_dict(value))
                     continue
                 setattr(instance, key, value)
+        instance._rawdata = dict_repr
         return instance
 
     def repr_items(self, representation):
@@ -101,6 +102,15 @@ class Model:
                 setattr(self, name, None)
         #TODO: USE DEPENDENCY INJECTION FOR THE MOTHER OF GOD
         setattr(self, '_http', RequestAdapter())
+
+    def __repr__(self):
+        if hasattr(self, 'name'):
+            return "<{} {}>".format(
+                self.__class__.__name__,
+                getattr(self, 'name')
+            )
+        else:
+            return super().__repr__()
 
 
 class HttpInterface(metaclass=ABCMeta):
