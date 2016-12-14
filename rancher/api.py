@@ -18,7 +18,7 @@ class RancherApi:
         pass
 
     def list_envs(self):
-        envs = self.http.get(self.settings.url + '/environments')['data']
+        envs = self.http.get(self.settings.url + '/environments').json()['data']
         return [RancherEnvironment.from_dict(i) for i in envs]
 
     def remove_env(self, environment):

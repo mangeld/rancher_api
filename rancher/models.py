@@ -46,7 +46,7 @@ class RancherEnvironment(Model, JsonMarshable):
     @property
     @lru_cache(maxsize=128)
     def services(self):
-        data = self._http.get(self.links.services)['data']
+        data = self._http.get(self.links.services).json()['data']
         #import ipdb; ipdb.set_trace()
         return [RancherEnvironmentService.from_dict(i) for i in data]
 

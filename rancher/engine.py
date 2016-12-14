@@ -120,7 +120,7 @@ class HttpInterface(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def post(self, url):
+    def post(self, url, *extra, **kwargs):
         pass
 
     @abstractmethod
@@ -138,10 +138,10 @@ class RequestAdapter(HttpInterface):
         self.session = requests.Session()
 
     def get(self, url):
-        return requests.get(url).json()
+        return requests.get(url)
 
-    def post(self, url):
-        return requests.post(url).json()
+    def post(self, url, *extra, **kwargs):
+        return requests.post(url, **kwargs)
 
     def delete(self, url):
         pass
