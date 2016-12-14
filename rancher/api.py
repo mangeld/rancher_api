@@ -1,4 +1,7 @@
-from rancher.models import RancherEnvironment
+from functools import lru_cache
+
+from rancher.models import RancherEnvironment, RancherApiHome, RancherAccount
+from rancher.errors import ApiException, ExistentObjectException
 
 
 class ApiSettings:
@@ -14,8 +17,74 @@ class RancherApi:
         self.settings = settings
         self.http = request_adapter
 
-    def create_env(self, env_definition):
-        pass
+    @property
+    @lru_cache(maxsize=10)
+    def links(self):
+        response = self.http.get(self.settings.url)
+        return RancherApiHome.from_dict(response.json()).links
+
+    @property
+    @lru_cache(maxsize=100)
+    def accounts(self):
+        response = self.http.get(self.links.accounts)
+        if not response.ok:
+            raise ApiException(response.json()['message'])
+        return [RancherAccount.from_dict(i) for i in response.json()['data']]
+
+    @property
+    def projects(self):
+        return [i for i in self.accounts if i.type == 'project']
+
+    def get_project(self, name=None):
+        """
+        Search a project by name in a case-insensitive form.
+        """
+        for project in self.projects:
+            if project.name.lower() == name.lower():
+                return project
+
+    def get_account(self, name=None):
+        """
+        Search an account by name in a case-insensitive form.
+        """
+        for account in self.accounts:
+            if account.name.lower() == name.lower():
+                return account
+        return None
+
+    def create_env(self, name, account, description="", docker_compose="", rancher_compose=""):
+        if not isinstance(account, RancherAccount):
+            raise TypeError(
+                'Provide a RancherAccount object'
+                ' for the parameter account'
+            )
+
+        if not account.type == 'project':
+            raise TypeError(
+                "An account with type 'project' "
+                "has to be given. Provided one was"
+                " of type: {}"
+                .format(account.type)
+            )
+
+        data = {
+            'name': name,
+            'description': description,
+            'dockerCompose': docker_compose,
+            'rancherCompose': rancher_compose,
+            'startOnCreate': True,
+        }
+        response = self.http.post(
+            self.settings.url + "/projects/{}/environment".format(account.id),
+            json=data
+        )
+        if not response.ok:
+            if response.status_code == 422:
+                raise ExistentObjectException("The environment already exists")
+            message = response.json()['message']
+            raise ApiException(message)
+
+        return RancherEnvironment.from_dict(response.json())
 
     def list_envs(self):
         envs = self.http.get(self.settings.url + '/environments').json()['data']
