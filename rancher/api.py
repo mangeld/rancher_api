@@ -8,7 +8,7 @@ class ApiSettings:
     url = None
     access_key = None
     secret_key = None
-    environment = None
+    account = None
 
 
 class RancherApi:
@@ -32,8 +32,20 @@ class RancherApi:
         return [RancherAccount.from_dict(i) for i in response.json()['data']]
 
     @property
+    @lru_cache(maxsize=100)
+    def envs(self):
+        envs = self.http.get(self.settings.url + '/environments').json()['data']
+        return [RancherEnvironment.from_dict(i) for i in envs]
+
+    @property
     def projects(self):
         return [i for i in self.accounts if i.type == 'project']
+
+
+    def get_env(self, name=None):
+        for env in self.envs:
+            if env.name.lower() == name.lower():
+                return env
 
     def get_project(self, name=None):
         """
@@ -85,10 +97,6 @@ class RancherApi:
             raise ApiException(message)
 
         return RancherEnvironment.from_dict(response.json())
-
-    def list_envs(self):
-        envs = self.http.get(self.settings.url + '/environments').json()['data']
-        return [RancherEnvironment.from_dict(i) for i in envs]
 
     def remove_env(self, environment):
         environment.remove()
