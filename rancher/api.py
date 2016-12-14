@@ -2,6 +2,7 @@ from functools import lru_cache
 
 from rancher.models import RancherEnvironment, RancherApiHome, RancherAccount
 from rancher.errors import ApiException, ExistentObjectException
+from rancher.engine import RequestAdapter
 
 
 class ApiSettings:
@@ -16,6 +17,13 @@ class RancherApi:
     def __init__(self, settings, request_adapter):
         self.settings = settings
         self.http = request_adapter
+
+    @classmethod
+    def client(cls, url):
+        settings = ApiSettings()
+        settings.url = url
+        http_client = RequestAdapter()
+        return cls(settings, http_client)
 
     @property
     @lru_cache(maxsize=10)
