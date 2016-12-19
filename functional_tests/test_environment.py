@@ -1,4 +1,5 @@
 from random import choice
+from time import sleep
 
 from rancher import api
 from rancher.engine import RequestAdapter
@@ -34,6 +35,7 @@ class TestEnvironmentIsListed:
             account,
             docker_compose=DOCKER_COMPOSE
         )
+        sleep(1)
         service_count = len(environment.services)
         environment.remove()
 
@@ -49,4 +51,3 @@ class TestEnvironmentIsListed:
         account = client.get_account("Default")
         environment = client.create_env('created-from-python', account)
         environment.remove()
-

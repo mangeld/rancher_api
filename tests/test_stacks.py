@@ -13,6 +13,6 @@ class TestListStack:
 
         settings.url = "http://test.com"
         api = RancherApi(settings, http_client)
-        api.list_envs()
+        api.envs
 
         http_client.get.assert_called()
