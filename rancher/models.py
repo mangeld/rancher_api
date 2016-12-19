@@ -175,7 +175,6 @@ class RancherEnvironment(Model, JsonMarshable):
     links = RancherEnvironmentLinks
 
     @property
-    @lru_cache(maxsize=128)
     def services(self):
         data = self._http.get(self.links.services).json()['data']
         #import ipdb; ipdb.set_trace()
