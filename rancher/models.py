@@ -129,6 +129,12 @@ class RancherEnvironmentActions(Model, JsonMarshable):
     exportconfig = ""
 
 
+class RancherServiceLaunchConfig(Model, JsonMarshable):
+    labels = ""
+    image_uuid = ""
+    environment = ""
+
+
 class RancherEnvironmentService(Model, JsonMarshable):
     name = ""
     state = ""
@@ -136,6 +142,15 @@ class RancherEnvironmentService(Model, JsonMarshable):
     created = ""
     created_ts = ""
     current_scale = ""
+    launch_config = RancherServiceLaunchConfig
+
+    @property
+    def labels(self):
+        return self.launch_config.labels
+
+    @property
+    def environment(self):
+        return self.launch_config.environment
 
 
 class RancherEnvironmentLinks(Model, JsonMarshable):
