@@ -40,7 +40,8 @@ class JsonMarshable:
     def from_dict(cls, dict_repr):
         members = cls.get_members()
         instance = cls()
-        for key, value in instance.repr_items(dict_repr):
+        dict_repr = instance.uncamelize_keys(dict_repr) if cls.uncamelize else dict_repr
+        for key, value in dict_repr.items():
             if key in members.keys():
                 if members[key] and issubclass(members[key], Model):
                     setattr(instance, key, getattr(cls, key).from_dict(value))
@@ -49,18 +50,15 @@ class JsonMarshable:
         instance._rawdata = dict_repr
         return instance
 
-    def repr_items(self, representation):
-        if isinstance(representation, types.GeneratorType):
-            items = representation
-        else:
-            items = representation.items()
-        if self.uncamelize:
-            for key, value in items:
-                if isinstance(value, dict):
-                    value = self.repr_items(value)
-                yield uncamelize(key), value
-        else:
-            yield from items
+    def uncamelize_keys(self, representation):
+        result = dict()
+        if not representation:
+            return dict()
+        for key, value in representation.items():
+            if isinstance(value, dict):
+                value = self.uncamelize_keys(value)
+            result.update({uncamelize(key): value})
+        return result
 
     def to_dict(self):
         obj = dict()
