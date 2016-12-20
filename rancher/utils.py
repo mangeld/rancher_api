@@ -2,7 +2,7 @@ import string
 
 
 class dummy_lru_cache:
-    def __init__(self, func, *args, **kwargs):
+    def __init__(self, func):
         self.func = func
     def __call__(self, *args, **kwargs):
         return self.func(*args, **kwargs)
