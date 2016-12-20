@@ -1,4 +1,4 @@
-from rancher.engine import Model, Field
+from rancher.engine import Model
 import pytest
 
 
@@ -36,7 +36,7 @@ class TestBaseModel:
 
     def test_init_populates_declared_field(self):
         class Inherited(Model):
-            attr1 = Field()
+            attr1 = ""
 
         inherited = Inherited(attr1="test")
 
