@@ -111,7 +111,8 @@ class Model:
             return super().__repr__()
 
 
-class HttpInterface(metaclass=ABCMeta):
+class HttpInterface():
+    __metaclass__ = ABCMeta
 
     @abstractmethod
     def get(self, url):
