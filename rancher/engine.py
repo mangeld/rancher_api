@@ -7,23 +7,6 @@ from rancher.utils import uncamelize
 import requests
 
 
-class Field:
-
-    def __init__(self, default="", cast=str):
-        self.values = dict()
-        self.default = default
-        self.cast = cast
-
-    def __get__(self, instance, owner):
-        return self.values.get(instance, self.default)
-
-    def __set__(self, instance, value):
-        self.values[instance] = value
-
-    def __delete__(self, instance):
-        del self.values[instance]
-
-
 class JsonMarshable:
 
     uncamelize = True
