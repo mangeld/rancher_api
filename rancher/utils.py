@@ -1,11 +1,16 @@
 import string
+from functools import wraps
 
 
 class dummy_lru_cache:
-    def __init__(self, func):
-        self.func = func
-    def __call__(self, *args, **kwargs):
-        return self.func(*args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        pass
+
+    def __call__(self, f):
+        @wraps(f)
+        def wrapped(*args, **kwargs):
+            return f(*args, **kwargs)
+        return wrapped
 
 def process(previous, current, next_chr):
     uppercase = string.ascii_uppercase
