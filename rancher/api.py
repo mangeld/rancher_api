@@ -1,4 +1,11 @@
-from functools import lru_cache
+try:
+    from functools import lru_cache
+except ImportError:
+    class lru_cache:
+        def __init__(self, func, *args, **kwargs):
+            self.func = func
+        def __call__(self, *args, **kwargs):
+            return self.func(*args, **kwargs)
 
 from rancher.models import RancherEnvironment, RancherApiHome, RancherAccount
 from rancher.errors import ApiException, ExistentObjectException
