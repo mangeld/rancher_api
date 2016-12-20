@@ -1,6 +1,12 @@
 import string
 
 
+class dummy_lru_cache:
+    def __init__(self, func, *args, **kwargs):
+        self.func = func
+    def __call__(self, *args, **kwargs):
+        return self.func(*args, **kwargs)
+
 def process(previous, current, next_chr):
     uppercase = string.ascii_uppercase
     if not previous and current in uppercase:

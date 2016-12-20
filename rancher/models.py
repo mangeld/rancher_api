@@ -1,5 +1,3 @@
-from functools import lru_cache
-
 from rancher.engine import Model, JsonMarshable
 
 
