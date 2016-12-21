@@ -165,6 +165,8 @@ class RancherEnvironment(Model, JsonMarshable):
     name = ""
     description = ""
     docker_compose = ""
+    health_state = ""
+    state = ""
     rancher_compose = ""
     created_ts = ""
     start_services = True
