@@ -127,6 +127,17 @@ class RancherEnvironmentActions(Model, JsonMarshable):
     exportconfig = ""
 
 
+class RancherServiceActions(Model, JsonMarshable):
+    update = ""
+    restart = ""
+    remove = ""
+    setservicelinks = ""
+    removeservicelink = ""
+    upgrade = ""
+    addservicelink = ""
+    deactivate = ""
+
+
 class RancherServiceLaunchConfig(Model, JsonMarshable):
     labels = ""
     image_uuid = ""
@@ -141,6 +152,16 @@ class RancherEnvironmentService(Model, JsonMarshable):
     created_ts = ""
     current_scale = ""
     launch_config = RancherServiceLaunchConfig
+    actions = RancherServiceActions
+
+    def __repr__(self):
+        return "<{o.__class__.__name__} {o.name} ({o.state})>".format(o=self)
+
+    def stop(self):
+        self._http.post(self.actions.deactivate)
+
+    def remove(self):
+        self._http.post(self.actions.remove)
 
     @property
     def labels(self):
@@ -182,6 +203,9 @@ class RancherEnvironment(Model, JsonMarshable):
 
     def remove(self):
         self._http.post(self.actions.remove)
+
+    def stop(self):
+        self._http.post(self.actions.deactivateservices)
 
 
 class RancherService:
