@@ -11,5 +11,6 @@ setup(
     packages=['rancher',],
     install_requires=[
         'requests==2.12.1',
+        'websocket-client==0.40.0',
     ],
 )
