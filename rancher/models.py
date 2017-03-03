@@ -1,4 +1,5 @@
 from rancher.engine import Model, JsonMarshable
+import websocket
 
 
 class RancherApiHomeLinks(Model, JsonMarshable):
@@ -144,6 +145,16 @@ class RancherServiceLaunchConfig(Model, JsonMarshable):
     environment = ""
 
 
+class RancherServiceLinks(Model, JsonMarshable):
+    self = ""
+    account = ""
+    consumedbyservices = ""
+    evironment = ""
+    instances = ""
+    service_expose_maps = ""
+    container_stats = ""
+
+
 class RancherEnvironmentService(Model, JsonMarshable):
     name = ""
     state = ""
@@ -152,6 +163,7 @@ class RancherEnvironmentService(Model, JsonMarshable):
     created_ts = ""
     current_scale = ""
     launch_config = RancherServiceLaunchConfig
+    links = RancherServiceLinks
     actions = RancherServiceActions
 
     def __repr__(self):
@@ -170,6 +182,74 @@ class RancherEnvironmentService(Model, JsonMarshable):
     @property
     def environment(self):
         return self.launch_config.environment
+
+    @property
+    def instances(self):
+        data = self._http.get(self.links.instances).json()['data']
+        return [RancherEnvironmentServiceInstance.from_dict(i) for i in data]
+
+
+class RancherEnvironmentServiceInstanceLinks(Model, JsonMarshable):
+    self = ""
+    account = ""
+    credentials = ""
+    healthcheckInstanceHostMaps = ""
+    hosts = ""
+    instanceLabels = ""
+    instanceLinks = ""
+    instances = ""
+    mounts = ""
+    ports = ""
+    registryCredential = ""
+    serviceEvents = ""
+    serviceExposeMaps = ""
+    services = ""
+    targetInstanceLinks = ""
+    volumes = ""
+    stats = ""
+    containerStats = ""
+
+
+class RancherEnvironmentServiceInstanceActions(Model, JsonMarshable):
+    update = ""
+    stop = ""
+    restart = ""
+    migrate = ""
+    logs = ""
+    setlabels = ""
+    execute = ""
+    proxy = ""
+
+
+class RancherEnvironmentServiceInstance(Model, JsonMarshable):
+    id = ""
+    type = ""
+    links = RancherEnvironmentServiceInstanceLinks
+    actions = RancherEnvironmentServiceInstanceActions
+    state = ""
+    name = ""
+    account_id = ""
+    created_ts = ""
+    created = ""
+    data_volumes = ""
+
+    def execute(self, command=list(), attach_stdin=False, attach_stdout=False, tty=False, open_ws=False):
+        response = self._http.post(
+            self.actions.execute,
+            json={
+                'command': command,
+                'attachStdin': attach_stdin,
+                'attachStdout': attach_stdout,
+                'tty': tty,
+            }
+        )
+
+        if open_ws:
+            token = response.json()['token']
+            ws_url = response.json()['url']
+            ws = websocket.WebSocket()
+            ws.connect("{}?token={}".format(ws_url, token))
+            return ws
 
 
 class RancherEnvironmentLinks(Model, JsonMarshable):
