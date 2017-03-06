@@ -233,6 +233,9 @@ class RancherEnvironmentServiceInstance(Model, JsonMarshable):
     created = ""
     data_volumes = ""
 
+    def __repr__(self):
+        return "<{o.__class__.__name__} {o.name} ({o.state})>".format(o=self)
+
     def execute(self, command=list(), attach_stdin=False, attach_stdout=False, tty=False, open_ws=False):
         response = self._http.post(
             self.actions.execute,
