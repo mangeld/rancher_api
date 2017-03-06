@@ -1,0 +1,2 @@
+class NotRunningException(Exception):
+    pass
