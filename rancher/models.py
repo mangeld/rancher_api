@@ -1,4 +1,5 @@
 from rancher.engine import Model, JsonMarshable
+from rancher.exceptions import NotRunningException
 import websocket
 
 
@@ -237,6 +238,8 @@ class RancherEnvironmentServiceInstance(Model, JsonMarshable):
         return "<{o.__class__.__name__} {o.name} ({o.state})>".format(o=self)
 
     def execute(self, command=list(), attach_stdin=False, attach_stdout=False, tty=False, open_ws=False):
+        if self.state != 'running':
+            raise NotRunningException("Can't execute a command on an stopped container.")
         response = self._http.post(
             self.actions.execute,
             json={
