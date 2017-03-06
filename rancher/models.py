@@ -234,6 +234,10 @@ class RancherEnvironmentServiceInstance(Model, JsonMarshable):
     created = ""
     data_volumes = ""
 
+    @property
+    def running(self):
+        return self.state == 'running'
+
     def __repr__(self):
         return "<{o.__class__.__name__} {o.name} ({o.state})>".format(o=self)
 
