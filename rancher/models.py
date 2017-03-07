@@ -1,6 +1,7 @@
 from rancher.engine import Model, JsonMarshable
 from rancher.exceptions import NotRunningException
 import websocket
+from websocket._exceptions import WebSocketConnectionClosedException
 
 
 class RancherApiHomeLinks(Model, JsonMarshable):
@@ -253,13 +254,17 @@ class RancherEnvironmentServiceInstance(Model, JsonMarshable):
                 'tty': tty,
             }
         )
-
+        token = response.json()['token']
+        ws_url = response.json()['url']
+        ws = websocket.WebSocket()
+        ws.connect("{}?token={}".format(ws_url, token))
         if open_ws:
-            token = response.json()['token']
-            ws_url = response.json()['url']
-            ws = websocket.WebSocket()
-            ws.connect("{}?token={}".format(ws_url, token))
             return ws
+        else:
+            try:
+                while True: ws.next()
+            except WebSocketConnectionClosedException:
+                pass
 
 
 class RancherEnvironmentLinks(Model, JsonMarshable):
