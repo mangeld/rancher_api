@@ -43,7 +43,6 @@ class RancherApi:
         return [RancherAccount.from_dict(i) for i in response.json()['data']]
 
     @property
-    @lru_cache(maxsize=100)
     def envs(self):
         envs = self.http.get(self.settings.url + '/environments').json()['data']
         return [RancherEnvironment.from_dict(i) for i in envs]
