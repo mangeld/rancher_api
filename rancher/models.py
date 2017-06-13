@@ -178,7 +178,7 @@ class RancherEnvironmentService(Model, JsonMarshable):
 
     @property
     def labels(self):
-        return self.launch_config.labels
+        return getattr(self.launch_config, 'labels', None)
 
     @property
     def environment(self):
@@ -288,7 +288,6 @@ class RancherEnvironment(Model, JsonMarshable):
     @property
     def services(self):
         data = self._http.get(self.links.services).json()['data']
-        #import ipdb; ipdb.set_trace()
         return [RancherEnvironmentService.from_dict(i) for i in data]
 
     def remove(self):
