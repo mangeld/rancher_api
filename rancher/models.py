@@ -170,6 +170,9 @@ class RancherEnvironmentService(Model, JsonMarshable):
     def __repr__(self):
         return "<{o.__class__.__name__} {o.name} ({o.state})>".format(o=self)
 
+    def restart(self):
+        self._http.post(self.actions.restart)
+
     def stop(self):
         self._http.post(self.actions.deactivate)
 
