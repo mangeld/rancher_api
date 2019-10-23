@@ -10,7 +10,7 @@ setup(
     url="https://github.com/mangeld/rancher_api",
     packages=['rancher',],
     install_requires=[
-        'requests==2.12.1',
+        'requests==2.20.0',
         'websocket-client==0.40.0',
     ],
 )
